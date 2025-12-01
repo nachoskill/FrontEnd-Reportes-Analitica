@@ -104,7 +104,11 @@ export const ReporteVentas: React.FC = () => {
     orden: "asc"
   });
 
+<<<<<<< HEAD
   const tienePermiso = user && (user.role === "Vendedor" || user.role === "Admin" );
+=======
+  const tienePermiso = user && (user.role === "gerente" || user.role === "admin");
+>>>>>>> 51ae5e0228ddfbc6bc1f50aed23baf869c0c044d
 
   const fetchTiendas = async () => {
     try {

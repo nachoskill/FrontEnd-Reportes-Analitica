@@ -1,4 +1,5 @@
 import React from "react";
+<<<<<<< HEAD
 import { Box, Grid, Paper, Stack, Typography, Button, Tooltip as MuiTooltip } from "@mui/material";
 import {
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Cell,
@@ -10,16 +11,43 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import PublicIcon from '@mui/icons-material/Public';
 import BadgeIcon from '@mui/icons-material/Badge';
 import DateRangeIcon from '@mui/icons-material/DateRange'; // Icono para Cohortes
+=======
+import { Box, Grid, Paper, Stack, Typography, Button, Chip } from "@mui/material";
+import {
+  ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Cell,
+  LineChart, Line, AreaChart, Area
+} from "recharts";
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import PublicIcon from '@mui/icons-material/Public';
+import BadgeIcon from '@mui/icons-material/Badge';
+import LocalActivityIcon from '@mui/icons-material/LocalActivity';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'; // Icono puntito
+>>>>>>> 51ae5e0228ddfbc6bc1f50aed23baf869c0c044d
 
 // --- COLORES ---
 const PURPLE_ACTIVE = "#7367F0";
 const PURPLE_LIGHT = "#E0E0FC";
+<<<<<<< HEAD
 const PRIMARY_TEAL = "#0d9488"; // Color principal
 const COLORS_ROLES = ["#7367F0", "#FF9F43"]; 
 
 // --- DATOS MOCK ---
 
 // 1. NUEVOS USUARIOS
+=======
+const PRIMARY_TEAL = "#0d9488"; // Color principal para actividad diaria
+const COLORS_ROLES = ["#7367F0", "#FF9F43"]; 
+
+const COLORS_ACTIVITY = {
+  High: "#28C76F",   
+  Medium: "#00CFE8", 
+  Low: "#A8AAAE"     
+};
+
+// --- DATOS MOCK ---
+
+// 1. NUEVOS USUARIOS (Macro - Mensual)
+>>>>>>> 51ae5e0228ddfbc6bc1f50aed23baf869c0c044d
 const dataNewUsersBar = [
   { name: 'Feb', value: 4500, active: false },
   { name: 'Mar', value: 5000, active: true },
@@ -29,21 +57,35 @@ const dataNewUsersBar = [
   { name: 'Jul', value: 3100, active: false },
 ];
 
+<<<<<<< HEAD
 // 2. SESIONES HOY
+=======
+// 2. SESIONES HOY (Micro - Diario por Hora) <--- NUEVO
+>>>>>>> 51ae5e0228ddfbc6bc1f50aed23baf869c0c044d
 const dataSesionesHoy = [
   { hora: '00:00', usuarios: 120 },
   { hora: '04:00', usuarios: 45 },
   { hora: '08:00', usuarios: 350 },
   { hora: '10:00', usuarios: 890 },
+<<<<<<< HEAD
   { hora: '12:00', usuarios: 1200 },
   { hora: '14:00', usuarios: 1100 },
   { hora: '16:00', usuarios: 950 },
   { hora: '18:00', usuarios: 1400 },
+=======
+  { hora: '12:00', usuarios: 1200 }, // Peak mediodía
+  { hora: '14:00', usuarios: 1100 },
+  { hora: '16:00', usuarios: 950 },
+  { hora: '18:00', usuarios: 1400 }, // Peak tarde
+>>>>>>> 51ae5e0228ddfbc6bc1f50aed23baf869c0c044d
   { hora: '20:00', usuarios: 1100 },
   { hora: '22:00', usuarios: 600 },
 ];
 
+<<<<<<< HEAD
 // 3. ROLES Y GEO
+=======
+>>>>>>> 51ae5e0228ddfbc6bc1f50aed23baf869c0c044d
 const dataRoles = [
   { name: 'Clientes', value: 8500 },
   { name: 'Vendedores', value: 1200 },
@@ -57,6 +99,7 @@ const dataGeo = [
   { ciudad: 'Ext.', usuarios: 300 },
 ];
 
+<<<<<<< HEAD
 // 4. DATOS DE COHORTES (NUEVO)
 const dataCohorts = [
   { month: 'Feb', users: 4500, rates: [100, 42, 35, 32, 28, 25] },
@@ -68,11 +111,20 @@ const dataCohorts = [
 ];
 
 // --- ESTILOS COMUNES ---
+=======
+const dataUserQuality = [
+  { name: 'Compradores (Acción Alta)', value: 1500, color: COLORS_ACTIVITY.High, desc: 'Compraron o añadieron al carrito' },
+  { name: 'Exploradores (Acción Media)', value: 4200, color: COLORS_ACTIVITY.Medium, desc: 'Usaron buscador o vieron >3 ítems' },
+  { name: 'Observadores (Acción Baja)', value: 3100, color: COLORS_ACTIVITY.Low, desc: 'Solo visitaron la página de inicio' },
+];
+
+>>>>>>> 51ae5e0228ddfbc6bc1f50aed23baf869c0c044d
 const cardStyle = {
   borderRadius: "20px", boxShadow: "0px 5px 25px rgba(0, 0, 0, 0.05)",
   bgcolor: "#FFFFFF", p: 3, height: "100%", display: "flex", flexDirection: "column"
 };
 
+<<<<<<< HEAD
 // --- SUB-COMPONENTE: HEATMAP DE RETENCIÓN ---
 const RetentionCohort = () => {
     // Escala de color basada en el porcentaje
@@ -161,13 +213,19 @@ const RetentionCohort = () => {
 };
 
 // --- COMPONENTE PRINCIPAL ---
+=======
+>>>>>>> 51ae5e0228ddfbc6bc1f50aed23baf869c0c044d
 const ActividadUsuarioTab: React.FC = () => {
   return (
     <Box>
       {/* SECCIÓN 1: GRÁFICOS SUPERIORES */}
       <Grid container spacing={3} sx={{ mb: 3 }}>
         
+<<<<<<< HEAD
         {/* GRÁFICO 1: NUEVOS USUARIOS */}
+=======
+        {/* GRÁFICO 1: NUEVOS USUARIOS (MENSUAL) */}
+>>>>>>> 51ae5e0228ddfbc6bc1f50aed23baf869c0c044d
         <Grid item xs={12} md={6}>
           <Paper sx={cardStyle}>
             <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
@@ -192,15 +250,26 @@ const ActividadUsuarioTab: React.FC = () => {
           </Paper>
         </Grid>
 
+<<<<<<< HEAD
         {/* GRÁFICO 2: USUARIOS ACTIVOS HOY */}
+=======
+        {/* GRÁFICO 2: USUARIOS ACTIVOS HOY (DIARIO) */}
+>>>>>>> 51ae5e0228ddfbc6bc1f50aed23baf869c0c044d
         <Grid item xs={12} md={6}>
           <Paper sx={cardStyle}>
             <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
               <Box>
                   <Stack direction="row" alignItems="center" spacing={1}>
                       <Typography variant="h6" color="#333" fontWeight={800}>Actividad Diaria</Typography>
+<<<<<<< HEAD
                   </Stack>
                   <Typography variant="body2" color="textSecondary">Usuarios activos por hora (Promedio)</Typography>
+=======
+                      {/* Indicador LIVE */}
+                      
+                  </Stack>
+                  <Typography variant="body2" color="textSecondary">Usuarios activos por dia</Typography>
+>>>>>>> 51ae5e0228ddfbc6bc1f50aed23baf869c0c044d
               </Box>
               <Typography variant="h4" fontWeight={800} color={PRIMARY_TEAL}>1.4k</Typography>
             </Stack>
@@ -232,12 +301,20 @@ const ActividadUsuarioTab: React.FC = () => {
 
       {/* SECCIÓN 2: SEGMENTACIÓN */}
       <Typography variant="h6" sx={{ mb: 2, fontWeight: 700, color: PRIMARY_TEAL }}>
+<<<<<<< HEAD
           Segmentación y Calidad
+=======
+          Segmentación de Usuarios
+>>>>>>> 51ae5e0228ddfbc6bc1f50aed23baf869c0c044d
       </Typography>
 
       <Grid container spacing={3}>
         {/* 1. ROLES */}
+<<<<<<< HEAD
         <Grid item xs={12} md={6}>
+=======
+        <Grid item xs={12} md={4}>
+>>>>>>> 51ae5e0228ddfbc6bc1f50aed23baf869c0c044d
             <Paper sx={cardStyle}>
                 <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
                     <BadgeIcon sx={{ color: PRIMARY_TEAL }} />
@@ -260,7 +337,11 @@ const ActividadUsuarioTab: React.FC = () => {
         </Grid>
 
         {/* 2. GEOGRAFÍA */}
+<<<<<<< HEAD
         <Grid item xs={12} md={6}>
+=======
+        <Grid item xs={12} md={4}>
+>>>>>>> 51ae5e0228ddfbc6bc1f50aed23baf869c0c044d
             <Paper sx={cardStyle}>
                 <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
                     <PublicIcon sx={{ color: PRIMARY_TEAL }} />
@@ -277,7 +358,11 @@ const ActividadUsuarioTab: React.FC = () => {
             </Paper>
         </Grid>
 
+<<<<<<< HEAD
      
+=======
+       
+>>>>>>> 51ae5e0228ddfbc6bc1f50aed23baf869c0c044d
 
       </Grid>
     </Box>
