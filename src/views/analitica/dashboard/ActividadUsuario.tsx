@@ -1,76 +1,76 @@
-import React from "react";
-import { Box, Grid, Paper, Stack, Typography, Button, Tooltip as MuiTooltip } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, Grid, Paper, Stack, Typography, Button, Tooltip as MuiTooltip, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import {
-  ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Cell,
-  AreaChart, Area
+    ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Cell,
+    AreaChart, Area, LineChart, Line, LabelList
 } from "recharts";
+import { useApi } from "../../../hooks/useApi";
 
 // --- ICONOS ---
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import PublicIcon from '@mui/icons-material/Public';
 import BadgeIcon from '@mui/icons-material/Badge';
 import DateRangeIcon from '@mui/icons-material/DateRange'; // Icono para Cohortes
+import BarChartIcon from '@mui/icons-material/BarChart';
+import ShowChartIcon from '@mui/icons-material/ShowChart';
 
 // --- COLORES ---
 const PURPLE_ACTIVE = "#7367F0";
 const PURPLE_LIGHT = "#E0E0FC";
 const PRIMARY_TEAL = "#0d9488"; // Color principal
-const COLORS_ROLES = ["#7367F0", "#FF9F43"]; 
+const COLORS_ROLES = ["#7367F0", "#FF9F43"];
+
+// --- TIPOS ---
+interface NuevoUsuario {
+    name: string;
+    cantidad: number;
+    active: boolean;
+}
 
 // --- DATOS MOCK ---
 
-// 1. NUEVOS USUARIOS
-const dataNewUsersBar = [
-  { name: 'Feb', value: 4500, active: false },
-  { name: 'Mar', value: 5000, active: true },
-  { name: 'Abr', value: 2600, active: false },
-  { name: 'May', value: 4200, active: false },
-  { name: 'Jun', value: 1800, active: false },
-  { name: 'Jul', value: 3100, active: false },
-];
-
 // 2. SESIONES HOY
 const dataSesionesHoy = [
-  { hora: '00:00', usuarios: 120 },
-  { hora: '04:00', usuarios: 45 },
-  { hora: '08:00', usuarios: 350 },
-  { hora: '10:00', usuarios: 890 },
-  { hora: '12:00', usuarios: 1200 },
-  { hora: '14:00', usuarios: 1100 },
-  { hora: '16:00', usuarios: 950 },
-  { hora: '18:00', usuarios: 1400 },
-  { hora: '20:00', usuarios: 1100 },
-  { hora: '22:00', usuarios: 600 },
+    { hora: '00:00', usuarios: 120 },
+    { hora: '04:00', usuarios: 45 },
+    { hora: '08:00', usuarios: 350 },
+    { hora: '10:00', usuarios: 890 },
+    { hora: '12:00', usuarios: 1200 },
+    { hora: '14:00', usuarios: 1100 },
+    { hora: '16:00', usuarios: 950 },
+    { hora: '18:00', usuarios: 1400 },
+    { hora: '20:00', usuarios: 1100 },
+    { hora: '22:00', usuarios: 600 },
 ];
 
 // 3. ROLES Y GEO
 const dataRoles = [
-  { name: 'Clientes', value: 8500 },
-  { name: 'Vendedores', value: 1200 },
+    { name: 'Clientes', value: 8500 },
+    { name: 'Vendedores', value: 1200 },
 ];
 
 const dataGeo = [
-  { ciudad: 'Santiago', usuarios: 4500 },
-  { ciudad: 'Viña', usuarios: 1200 },
-  { ciudad: 'Conce', usuarios: 980 },
-  { ciudad: 'Antof.', usuarios: 650 },
-  { ciudad: 'Ext.', usuarios: 300 },
+    { ciudad: 'Santiago', usuarios: 4500 },
+    { ciudad: 'Viña', usuarios: 1200 },
+    { ciudad: 'Conce', usuarios: 980 },
+    { ciudad: 'Antof.', usuarios: 650 },
+    { ciudad: 'Ext.', usuarios: 300 },
 ];
 
 // 4. DATOS DE COHORTES (NUEVO)
 const dataCohorts = [
-  { month: 'Feb', users: 4500, rates: [100, 42, 35, 32, 28, 25] },
-  { month: 'Mar', users: 5000, rates: [100, 38, 32, 28, 24] },
-  { month: 'Abr', users: 2600, rates: [100, 35, 30, 25] },
-  { month: 'May', users: 4200, rates: [100, 32, 28] },
-  { month: 'Jun', users: 1800, rates: [100, 30] },
-  { month: 'Jul', users: 3100, rates: [100] },
+    { month: 'Feb', users: 4500, rates: [100, 42, 35, 32, 28, 25] },
+    { month: 'Mar', users: 5000, rates: [100, 38, 32, 28, 24] },
+    { month: 'Abr', users: 2600, rates: [100, 35, 30, 25] },
+    { month: 'May', users: 4200, rates: [100, 32, 28] },
+    { month: 'Jun', users: 1800, rates: [100, 30] },
+    { month: 'Jul', users: 3100, rates: [100] },
 ];
 
 // --- ESTILOS COMUNES ---
 const cardStyle = {
-  borderRadius: "20px", boxShadow: "0px 5px 25px rgba(0, 0, 0, 0.05)",
-  bgcolor: "#FFFFFF", p: 3, height: "100%", display: "flex", flexDirection: "column"
+    borderRadius: "20px", boxShadow: "0px 5px 25px rgba(0, 0, 0, 0.05)",
+    bgcolor: "#FFFFFF", p: 3, height: "100%", display: "flex", flexDirection: "column"
 };
 
 // --- SUB-COMPONENTE: HEATMAP DE RETENCIÓN ---
@@ -78,7 +78,7 @@ const RetentionCohort = () => {
     // Escala de color basada en el porcentaje
     const getBgColor = (percent: number) => {
         if (percent === 100) return '#f0fdfa'; // Base muy clara
-        const opacity = Math.max(0.2, percent / 60); 
+        const opacity = Math.max(0.2, percent / 60);
         return `rgba(13, 148, 136, ${opacity})`; // PRIMARY_TEAL dinámico
     };
 
@@ -89,7 +89,7 @@ const RetentionCohort = () => {
     return (
         <Paper sx={cardStyle}>
             <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
-                 <Stack direction="row" spacing={1} alignItems="center">
+                <Stack direction="row" spacing={1} alignItems="center">
                     <Box sx={{ p: 1, bgcolor: '#f0fdfa', borderRadius: '10px' }}>
                         <DateRangeIcon sx={{ color: PRIMARY_TEAL }} />
                     </Box>
@@ -97,7 +97,7 @@ const RetentionCohort = () => {
                         <Typography variant="h6" color="#333" fontWeight={800}>Retención de Usuarios (Cohortes)</Typography>
                         <Typography variant="body2" color="textSecondary">¿Vuelven los usuarios después del primer mes?</Typography>
                     </Box>
-                 </Stack>
+                </Stack>
             </Stack>
 
             <Box sx={{ overflowX: 'auto' }}>
@@ -124,13 +124,13 @@ const RetentionCohort = () => {
                             <Typography variant="caption" sx={{ width: 80, color: '#666' }}>
                                 {row.users.toLocaleString()}
                             </Typography>
-                            
+
                             {/* Celdas Heatmap */}
                             {row.rates.map((rate, i) => (
-                                <MuiTooltip key={i} title={`${rate}% retenido (${Math.round(row.users * (rate/100))} usuarios)`} arrow>
-                                    <Box sx={{ 
-                                        flex: 1, 
-                                        height: 35, 
+                                <MuiTooltip key={i} title={`${rate}% retenido (${Math.round(row.users * (rate / 100))} usuarios)`} arrow>
+                                    <Box sx={{
+                                        flex: 1,
+                                        height: 35,
                                         bgcolor: getBgColor(rate),
                                         borderRadius: 1,
                                         display: 'flex',
@@ -147,7 +147,7 @@ const RetentionCohort = () => {
                                     </Box>
                                 </MuiTooltip>
                             ))}
-                            
+
                             {/* Relleno para efecto escalera */}
                             {Array.from({ length: 6 - row.rates.length }).map((_, i) => (
                                 <Box key={`empty-${i}`} sx={{ flex: 1 }} />
@@ -162,126 +162,215 @@ const RetentionCohort = () => {
 
 // --- COMPONENTE PRINCIPAL ---
 const ActividadUsuarioTab: React.FC = () => {
-  return (
-    <Box>
-      {/* SECCIÓN 1: GRÁFICOS SUPERIORES */}
-      <Grid container spacing={3} sx={{ mb: 3 }}>
-        
-        {/* GRÁFICO 1: NUEVOS USUARIOS */}
-        <Grid item xs={12} md={6}>
-          <Paper sx={cardStyle}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
-              <Box>
-                  <Typography variant="h6" color="#333" fontWeight={800}>Nuevos Usuarios</Typography>
-                  <Typography variant="body2" color="textSecondary">Registros mensuales</Typography>
-              </Box>
-              <Button endIcon={<KeyboardArrowDownIcon />} sx={{ color: '#888', textTransform: 'none', bgcolor: '#F5F5F5', borderRadius: 2, px: 2 }}>6 Meses</Button>
-            </Stack>
-            <ResponsiveContainer width="100%" height={250}>
-                <BarChart data={dataNewUsersBar}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eee" />
-                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#888' }} dy={10} />
-                    <Tooltip cursor={{fill: 'transparent'}} contentStyle={{ borderRadius: '10px', border: 'none', boxShadow: '0 5px 15px rgba(0,0,0,0.1)' }}/>
-                    <Bar dataKey="value" radius={[10, 10, 10, 10]} barSize={30}>
-                      {dataNewUsersBar.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.active ? PURPLE_ACTIVE : PURPLE_LIGHT} />
-                      ))}
-                    </Bar>
-                </BarChart>
-            </ResponsiveContainer>
-          </Paper>
-        </Grid>
+    const { get } = useApi();
+    const [dataNewUsersBar, setDataNewUsersBar] = useState<NuevoUsuario[]>([]);
+    const [rolesData, setRolesData] = useState<{ clientes: number; vendedores: number }>({ clientes: 0, vendedores: 0 });
+    const [periodo, setPeriodo] = useState<'dia' | 'semana'>('dia');
+    const [tipoGrafico, setTipoGrafico] = useState<'bar' | 'line'>('bar');
+    const [loadingUsuarios, setLoadingUsuarios] = useState(true);
 
-        {/* GRÁFICO 2: USUARIOS ACTIVOS HOY */}
-        <Grid item xs={12} md={6}>
-          <Paper sx={cardStyle}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
-              <Box>
-                  <Stack direction="row" alignItems="center" spacing={1}>
-                      <Typography variant="h6" color="#333" fontWeight={800}>Actividad Diaria</Typography>
-                  </Stack>
-                  <Typography variant="body2" color="textSecondary">Usuarios activos por hora (Promedio)</Typography>
-              </Box>
-              <Typography variant="h4" fontWeight={800} color={PRIMARY_TEAL}>1.4k</Typography>
-            </Stack>
-            
-            <ResponsiveContainer width="100%" height={250}>
-                <AreaChart data={dataSesionesHoy}>
-                    <defs>
-                        <linearGradient id="colorUsuarios" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor={PRIMARY_TEAL} stopOpacity={0.3}/>
-                            <stop offset="95%" stopColor={PRIMARY_TEAL} stopOpacity={0}/>
-                        </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eee" />
-                    <XAxis dataKey="hora" axisLine={false} tickLine={false} tick={{ fill: '#888' }} dy={10} />
-                    <Tooltip contentStyle={{ borderRadius: '10px', border: 'none', boxShadow: '0 5px 15px rgba(0,0,0,0.1)' }} />
-                    <Area 
-                        type="monotone" 
-                        dataKey="usuarios" 
-                        stroke={PRIMARY_TEAL} 
-                        strokeWidth={3} 
-                        fillOpacity={1} 
-                        fill="url(#colorUsuarios)" 
-                    />
-                </AreaChart>
-            </ResponsiveContainer>
-          </Paper>
-        </Grid>
-      </Grid>
+    // Cargar datos de nuevos usuarios
+    useEffect(() => {
+        const fetchNuevosUsuarios = async () => {
+            setLoadingUsuarios(true);
+            const data = await get<NuevoUsuario[]>(`/analiticas/actividad-usuarios/nuevos-usuarios?periodo=${periodo}`);
+            if (data) {
+                setDataNewUsersBar(data);
+            }
+            setLoadingUsuarios(false);
+        };
 
-      {/* SECCIÓN 2: SEGMENTACIÓN */}
-      <Typography variant="h6" sx={{ mb: 2, fontWeight: 700, color: PRIMARY_TEAL }}>
-          Segmentación y Calidad
-      </Typography>
+        fetchNuevosUsuarios();
+    }, [periodo, get]);
 
-      <Grid container spacing={3}>
-        {/* 1. ROLES */}
-        <Grid item xs={12} md={6}>
-            <Paper sx={cardStyle}>
-                <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
-                    <BadgeIcon sx={{ color: PRIMARY_TEAL }} />
-                    <Typography variant="subtitle1" fontWeight={700}>Roles (Comparativa)</Typography>
-                </Stack>
-                <ResponsiveContainer width="100%" height={200}>
-                    <BarChart data={dataRoles} margin={{ top: 20, right: 20, left: -20, bottom: 0 }}>
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                        <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#666' }} dy={10} />
-                        <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#888' }} />
-                        <Tooltip cursor={{fill: 'transparent'}} contentStyle={{ borderRadius: '10px' }} />
-                        <Bar dataKey="value" radius={[10, 10, 0, 0]} barSize={40}>
-                            {dataRoles.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={COLORS_ROLES[index % COLORS_ROLES.length]} />
-                            ))}
-                        </Bar>
-                    </BarChart>
-                </ResponsiveContainer>
-            </Paper>
-        </Grid>
+    // Cargar datos de roles
+    useEffect(() => {
+        const fetchRolesCount = async () => {
+            const data = await get<{ clientes: number; vendedores: number }>('/analiticas/actividad-usuarios/roles-count');
+            if (data) {
+                setRolesData(data);
+            }
+        };
 
-        {/* 2. GEOGRAFÍA */}
-        <Grid item xs={12} md={6}>
-            <Paper sx={cardStyle}>
-                <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
-                    <PublicIcon sx={{ color: PRIMARY_TEAL }} />
-                    <Typography variant="subtitle1" fontWeight={700}>Top Geografía</Typography>
-                </Stack>
-                <ResponsiveContainer width="100%" height={200}>
-                    <BarChart layout="vertical" data={dataGeo} margin={{ left: 10, right: 10 }}>
-                        <XAxis type="number" hide />
-                        <YAxis dataKey="ciudad" type="category" width={70} axisLine={false} tickLine={false} tick={{fontSize: 12}} />
-                        <Tooltip cursor={{fill: 'transparent'}} contentStyle={{ borderRadius: '10px' }} />
-                        <Bar dataKey="usuarios" fill="#00CFE8" radius={[0, 10, 10, 0]} barSize={20} />
-                    </BarChart>
-                </ResponsiveContainer>
-            </Paper>
-        </Grid>
+        fetchRolesCount();
+    }, [get]);
 
-     
+    return (
+        <Box>
+            {/* SECCIÓN 1: SEGMENTACIÓN */}
+            <Typography variant="h6" sx={{ mb: 2, fontWeight: 700, color: PRIMARY_TEAL }}>
+                Segmentación y Calidad
+            </Typography>
 
-      </Grid>
-    </Box>
-  );
+            <Grid container spacing={3} sx={{ mb: 3 }}>
+                {/* 1. ROLES */}
+                <Grid item xs={12}>
+                    <Paper sx={cardStyle}>
+                        <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 3 }}>
+                            <BadgeIcon sx={{ color: PRIMARY_TEAL }} />
+                            <Typography variant="subtitle1" fontWeight={700}>Roles (Comparativa)</Typography>
+                        </Stack>
+
+                        {/* Comparativa Numérica */}
+                        <Grid container spacing={3}>
+                            {/* Clientes */}
+                            <Grid item xs={6}>
+                                <Box sx={{ textAlign: 'center', p: 2, bgcolor: '#f0fdfa', borderRadius: 2 }}>
+                                    <Typography variant="caption" color="textSecondary" fontWeight={600} sx={{ textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                                        Clientes
+                                    </Typography>
+                                    <Typography variant="h3" fontWeight={800} sx={{ color: PURPLE_ACTIVE, mt: 1 }}>
+                                        {rolesData.clientes.toLocaleString()}
+                                    </Typography>
+                                </Box>
+                            </Grid>
+
+                            {/* Vendedores */}
+                            <Grid item xs={6}>
+                                <Box sx={{ textAlign: 'center', p: 2, bgcolor: '#fff5f0', borderRadius: 2 }}>
+                                    <Typography variant="caption" color="textSecondary" fontWeight={600} sx={{ textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                                        Vendedores
+                                    </Typography>
+                                    <Typography variant="h3" fontWeight={800} sx={{ color: '#FF9F43', mt: 1 }}>
+                                        {rolesData.vendedores.toLocaleString()}
+                                    </Typography>
+                                </Box>
+                            </Grid>
+                        </Grid>
+                    </Paper>
+                </Grid>
+            </Grid>
+
+            {/* SECCIÓN 2: GRÁFICO NUEVOS USUARIOS */}
+            <Grid container spacing={3} sx={{ mb: 3 }}>
+
+                {/* GRÁFICO 1: NUEVOS USUARIOS */}
+                <Grid item xs={12}>
+                    <Paper sx={cardStyle}>
+                        <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
+                            <Box>
+                                <Typography variant="h6" color="#333" fontWeight={800}>Nuevos Usuarios</Typography>
+                                <Typography variant="body2" color="textSecondary">
+                                    {periodo === 'dia' ? 'Por día del mes actual' : 'Por semanas del mes actual'}
+                                </Typography>
+                            </Box>
+                            <Stack direction="row" spacing={1}>
+                                {/* Botones para cambiar tipo de gráfico */}
+                                <Button
+                                    onClick={() => setTipoGrafico('bar')}
+                                    sx={{
+                                        minWidth: 40,
+                                        p: 1,
+                                        bgcolor: tipoGrafico === 'bar' ? PURPLE_ACTIVE : '#F5F5F5',
+                                        color: tipoGrafico === 'bar' ? '#FFF' : '#888',
+                                        '&:hover': { bgcolor: tipoGrafico === 'bar' ? PURPLE_ACTIVE : '#E0E0E0' }
+                                    }}
+                                >
+                                    <BarChartIcon />
+                                </Button>
+                                <Button
+                                    onClick={() => setTipoGrafico('line')}
+                                    sx={{
+                                        minWidth: 40,
+                                        p: 1,
+                                        bgcolor: tipoGrafico === 'line' ? PURPLE_ACTIVE : '#F5F5F5',
+                                        color: tipoGrafico === 'line' ? '#FFF' : '#888',
+                                        '&:hover': { bgcolor: tipoGrafico === 'line' ? PURPLE_ACTIVE : '#E0E0E0' }
+                                    }}
+                                >
+                                    <ShowChartIcon />
+                                </Button>
+                                {/* Botones para cambiar período */}
+                                <ToggleButtonGroup
+                                    value={periodo}
+                                    exclusive
+                                    onChange={(e, newValue) => newValue && setPeriodo(newValue)}
+                                    size="small"
+                                    sx={{
+                                        '& .MuiToggleButton-root': {
+                                            border: 'none',
+                                            borderRadius: '8px !important',
+                                            mx: 0.5,
+                                            px: 2,
+                                            textTransform: 'none',
+                                            color: '#888',
+                                            bgcolor: '#F5F5F5',
+                                            '&.Mui-selected': {
+                                                bgcolor: PURPLE_ACTIVE,
+                                                color: '#FFF',
+                                                '&:hover': { bgcolor: PURPLE_ACTIVE }
+                                            },
+                                            '&:hover': { bgcolor: '#E0E0E0' }
+                                        }
+                                    }}
+                                >
+                                    <ToggleButton value="dia">Día</ToggleButton>
+                                    <ToggleButton value="semana">Semana</ToggleButton>
+                                </ToggleButtonGroup>
+                            </Stack>
+                        </Stack>
+                        <ResponsiveContainer width="100%" height={250}>
+                            {tipoGrafico === 'bar' ? (
+                                <BarChart data={dataNewUsersBar}>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#ddd" />
+                                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#888' }} dy={10} />
+                                    <YAxis axisLine={false} tickLine={false} tick={{ fill: '#888', fontSize: 12 }} />
+                                    <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ borderRadius: '10px', border: 'none', boxShadow: '0 5px 15px rgba(0,0,0,0.1)' }} />
+                                    <Bar dataKey="cantidad" radius={[10, 10, 10, 10]} barSize={22}>
+                                        {dataNewUsersBar.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={entry.active ? PURPLE_ACTIVE : PURPLE_LIGHT} />
+                                        ))}
+                                        <LabelList
+                                            dataKey="cantidad"
+                                            position="top"
+                                            style={{ fill: '#333', fontWeight: 700, fontSize: 11 }}
+                                            formatter={(value: any) => (value > 0 ? value : '')}
+                                        />
+                                    </Bar>
+                                </BarChart>
+                            ) : (
+                                <LineChart data={
+                                    // Filtrar datos para el gráfico lineal: solo mostrar hasta el último día con datos
+                                    (() => {
+                                        // Encontrar el índice del último elemento con cantidad > 0 o que sea active
+                                        let lastIndexWithData = -1;
+                                        for (let i = dataNewUsersBar.length - 1; i >= 0; i--) {
+                                            if (dataNewUsersBar[i].cantidad > 0 || dataNewUsersBar[i].active) {
+                                                lastIndexWithData = i;
+                                                break;
+                                            }
+                                        }
+                                        // Retornar solo los datos hasta ese índice
+                                        return lastIndexWithData >= 0
+                                            ? dataNewUsersBar.slice(0, lastIndexWithData + 1)
+                                            : dataNewUsersBar;
+                                    })()
+                                }>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#000" />
+                                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#888' }} dy={10} />
+                                    <YAxis axisLine={false} tickLine={false} tick={{ fill: '#888', fontSize: 12 }} />
+                                    <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ borderRadius: '10px', border: 'none', boxShadow: '0 5px 15px rgba(0,0,0,0.1)' }} />
+                                    <Line
+                                        type="monotone"
+                                        dataKey="cantidad"
+                                        stroke={PURPLE_ACTIVE}
+                                        strokeWidth={3}
+                                        dot={{ fill: PURPLE_ACTIVE, r: 5 }}
+                                        activeDot={{ r: 7 }}
+                                    />
+                                </LineChart>
+                            )}
+                        </ResponsiveContainer>
+                        {loadingUsuarios && (
+                            <Box sx={{ textAlign: 'center', py: 2 }}>
+                                <Typography variant="body2" color="textSecondary">Cargando datos...</Typography>
+                            </Box>
+                        )}
+                    </Paper>
+                </Grid>
+            </Grid>
+        </Box>
+    );
 };
 
 export default ActividadUsuarioTab;

@@ -12,7 +12,7 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 function Home() {
   return (
     <Box sx={{ flexGrow: 1 }}>
-      
+
       {/* 1. SALUDO Y FECHA */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" fontWeight="bold" color="#333">
@@ -25,7 +25,7 @@ function Home() {
 
       {/* 2. TARJETAS DE KPI (Resumen del día) */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        
+
         {/* Tarjeta 1: Ventas Hoy */}
         <Grid item xs={12} sm={6} md={4}>
           <Paper elevation={2} sx={{ p: 3, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderRadius: 2 }}>
@@ -68,54 +68,54 @@ function Home() {
 
       {/* 3. SECCIÓN DIVIDIDA: ACCIONES RÁPIDAS Y ACTIVIDAD */}
       <Grid container spacing={3}>
-        
+
         {/* COLUMNA IZQUIERDA: Accesos Directos */}
         <Grid item xs={12} md={8}>
           <Typography variant="h6" fontWeight="bold" sx={{ mb: 2 }}>Accesos Rápidos</Typography>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
-               <Button 
-                 variant="contained" 
-                 fullWidth 
-                 size="large"
-                 startIcon={<AddCircleIcon />}
-                 sx={{ 
-                   bgcolor: '#A7C957', 
-                   height: '80px',
-                   fontSize: '1.1rem',
-                   '&:hover': { bgcolor: '#8da84a' } 
-                 }}
-               >
-                 Nueva Venta
-               </Button>
+              <Button
+                variant="contained"
+                fullWidth
+                size="large"
+                startIcon={<AddCircleIcon />}
+                sx={{
+                  bgcolor: '#A7C957',
+                  height: '80px',
+                  fontSize: '1.1rem',
+                  '&:hover': { bgcolor: '#8da84a' }
+                }}
+              >
+                Nueva Venta
+              </Button>
             </Grid>
             <Grid item xs={12} sm={6}>
-               <Button 
-                 variant="outlined" 
-                 fullWidth 
-                 size="large"
-                 startIcon={<InventoryIcon />}
-                 sx={{ 
-                   height: '80px',
-                   fontSize: '1.1rem',
-                   color: '#555',
-                   borderColor: '#ccc'
-                 }}
-               >
-                 Agregar Producto
-               </Button>
+              <Button
+                variant="outlined"
+                fullWidth
+                size="large"
+                startIcon={<InventoryIcon />}
+                sx={{
+                  height: '80px',
+                  fontSize: '1.1rem',
+                  color: '#555',
+                  borderColor: '#ccc'
+                }}
+              >
+                Agregar Producto
+              </Button>
             </Grid>
           </Grid>
 
           {/* Un gráfico pequeño o banner promocional podría ir aquí */}
           <Paper sx={{ mt: 3, p: 3, bgcolor: '#003c58', color: 'white', borderRadius: 2 }}>
-             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <TrendingUpIcon fontSize="large" />
-                <Box>
-                    <Typography variant="h6">Meta Mensual</Typography>
-                    <Typography variant="body2">Has alcanzado el 75% de tu objetivo de ventas este mes. ¡Sigue así!</Typography>
-                </Box>
-             </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <TrendingUpIcon fontSize="large" />
+              <Box>
+                <Typography variant="h6">Meta Mensual</Typography>
+                <Typography variant="body2">Has alcanzado el 75% de tu objetivo de ventas este mes. ¡Sigue así!</Typography>
+              </Box>
+            </Box>
           </Paper>
         </Grid>
 
@@ -124,7 +124,7 @@ function Home() {
           <Typography variant="h6" fontWeight="bold" sx={{ mb: 2 }}>Actividad Reciente</Typography>
           <Paper elevation={1} sx={{ borderRadius: 2 }}>
             <List sx={{ width: '100%', bgcolor: 'background.paper', borderRadius: 2 }}>
-              
+
               <ListItem>
                 <ListItemAvatar>
                   <Avatar src="/broken-image.jpg" />
@@ -132,7 +132,7 @@ function Home() {
                 <ListItemText primary="Venta #1024" secondary="Hace 5 minutos - $12.500" />
               </ListItem>
               <Divider variant="inset" component="li" />
-              
+
               <ListItem>
                 <ListItemAvatar>
                   <Avatar sx={{ bgcolor: 'orange' }}>S</Avatar>

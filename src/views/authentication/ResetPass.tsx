@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { TextField, Button, Typography, Box } from "@mui/material";
-import { styled } from "@mui/material/styles"; 
+import { styled } from "@mui/material/styles";
 import logo from "../../assets/EII_logo.png";
 
 // Estilos personalizados con styled para el botón
 const ResetButton = styled(Button)(() => ({
-  backgroundColor: "#1F4D5D", 
-  color: "#FFFFFF", 
+  backgroundColor: "#1F4D5D",
+  color: "#FFFFFF",
   "&:hover": {
-    backgroundColor: "#21484A", 
+    backgroundColor: "#21484A",
   },
   textTransform: "none",
 }));

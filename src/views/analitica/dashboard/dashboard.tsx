@@ -13,7 +13,8 @@ import {
   Cell,
   Legend,
   LineChart,
-  Line
+  Line,
+  LabelList
 } from "recharts";
 
 // --- IMPORTACIONES DE TUS COMPONENTES ---
@@ -56,7 +57,6 @@ const CARD_RADIUS = "20px";
 
 const MENU_TABS = [
   { label: "Ventas Generales", icon: <BarChartIcon fontSize="small" /> },
-  { label: "Control de Carritos", icon: <ShoppingCartIcon fontSize="small" /> },
   { label: "Descubrimiento", icon: <SearchIcon fontSize="small" /> },
   { label: "Actividad de Usuario", icon: <TimelineIcon fontSize="small" /> }
 ];
@@ -102,7 +102,14 @@ const MAPA_COLORES_REGIONES: Record<string, string> = {
 };
 
 const formatearDinero = (valor: number) => `$${valor.toLocaleString('es-CL')}`;
-const formatearDineroEje = (valor: number) => valor >= 1000 ? `$${(valor / 1000).toFixed(0)}k` : `$${valor}`;
+const formatearDineroEje = (valor: number) => {
+  if (valor >= 1000000) {
+    return `$${(valor / 1000000).toFixed(1)}m`;
+  } else if (valor >= 1000) {
+    return `$${(valor / 1000).toFixed(0)}k`;
+  }
+  return `$${valor}`;
+};
 const obtenerMesActual = () => new Date().toLocaleString('es-CL', { month: 'long' });
 
 const Dashboard: React.FC<DashboardProps> = ({
@@ -275,7 +282,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                         // IMPORTANTE: Agregamos margen inferior (bottom) para que quepan las etiquetas
                         margin={{ top: 20, right: 30, left: 0, bottom: 10 }}
                       >
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eee" />
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#ddd" />
 
                         <XAxis
                           dataKey="mes"
@@ -301,7 +308,14 @@ const Dashboard: React.FC<DashboardProps> = ({
                           contentStyle={{ borderRadius: '10px', border: 'none', boxShadow: '0px 4px 20px rgba(0,0,0,0.1)' }}
                           formatter={(val: number) => [formatearDinero(val), "Ventas"]}
                         />
-                        <Bar dataKey="ventas" fill={PRIMARY_COLOR} radius={[6, 6, 0, 0]} barSize={40} />
+                        <Bar dataKey="ventas" fill={PRIMARY_COLOR} radius={[6, 6, 0, 0]} barSize={32}>
+                          <LabelList
+                            dataKey="ventas"
+                            position="top"
+                            style={{ fill: '#333', fontWeight: 700, fontSize: 11 }}
+                            formatter={(value: any) => (value > 0 ? formatearDineroEje(value) : '')}
+                          />
+                        </Bar>
                       </BarChart>
                     ) : (
                       <LineChart
@@ -401,9 +415,8 @@ const Dashboard: React.FC<DashboardProps> = ({
           </Grid>
         )}
 
-        {tabValue === 1 && <CarritosTab dataEstadosCarrito={dataEstadosCarrito} />}
-        {tabValue === 2 && <DescubrimientoTab />}
-        {tabValue === 3 && <ActividadUsuarioTab />}
+        {tabValue === 1 && <DescubrimientoTab />}
+        {tabValue === 2 && <ActividadUsuarioTab />}
 
       </Box>
     </Box>

@@ -23,7 +23,7 @@ function Register() {
   const [apellido, setApellido] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
 
   return (
@@ -191,7 +191,7 @@ function Register() {
             </FormControl>
           </Box>
 
-          <Button variant="outlined" sx={{ width: "100%" }} onClick={() => {}}>
+          <Button variant="outlined" sx={{ width: "100%" }} onClick={() => { }}>
             Crear cuenta
           </Button>
 

@@ -133,5 +133,16 @@ export const analiticasService = {
       console.error("Error obteniendo top productos:", error);
       return [];
     }
+  },
+
+  // 9. Actividad Usuarios: Conteo de roles
+  obtenerRolesCount: async (): Promise<{ clientes: number; vendedores: number }> => {
+    try {
+      const { data } = await api.get<{ clientes: number; vendedores: number }>("/analiticas/actividad-usuarios/roles-count");
+      return data;
+    } catch (error) {
+      console.error("Error obteniendo conteo de roles:", error);
+      return { clientes: 0, vendedores: 0 };
+    }
   }
 };

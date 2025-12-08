@@ -137,7 +137,7 @@ const DescubrimientoTab: React.FC = () => {
                       <stop offset="95%" stopColor={PURPLE_CHART} stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#ddd" />
                   <XAxis dataKey="dia" axisLine={false} tickLine={false} tick={{ fill: '#888' }} dy={10} />
                   <YAxis axisLine={false} tickLine={false} tick={{ fill: '#888' }} />
                   <Tooltip
